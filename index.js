@@ -21,12 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Enable JSON parsing for POST requests
 app.use(bodyParser.json());
 
-app.get('/*', (req, res) => {
-  const requestedPath = req.url;
-  console.log(`Client requested path: ${requestedPath}`);
-  res.sendFile(path.join(__dirname, '/public', 'index.html'));
+// Serve the main HTML file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 function formatAndPrint(header, data) {
   console.log(header);
   console.log(data);
@@ -38,10 +36,6 @@ app.post('/save_ip', (req, res) => {
   console.log('************************************** WaLID **************************************',);
   console.log('+++++++++++++++++++++++++++++++ User Conect IP Local +++++++++++++++++++++++++++++++',);
   console.log('Local IP address...:', ipAddress);
-    // Get the URL path containing the "=" sign
- const urlPath = req.originalUrl; // This will give you the URL path
-
- console.log('URL Path:', urlPath);
   res.json({ message: 'IP address received successfully' });
 });
 
@@ -113,4 +107,3 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   startTime = new Date();
 });
-
