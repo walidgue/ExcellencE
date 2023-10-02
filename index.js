@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 // Serve the main HTML file
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   const requestedPath = req.url;
   console.log(`Client requested path: ${requestedPath}`);
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
