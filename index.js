@@ -16,40 +16,15 @@ let startTime;
 const deviceDetector = new DeviceDetector();
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public'))); 
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Enable JSON parsing for POST requests
 app.use(bodyParser.json());
-
-// List of known static file extensions to exclude
-const staticFileExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.ico'];
-const excludedPaths = ['/save_ip'];
-// Log and extract the last part of the path, excluding known static files
-app.use((req, res, next) => {
-  const requestedPath = req.url;
-
-  // Split the path by '/' and get the last part (excluding any query parameters)
-  const parts = requestedPath.split('/');
-  const lastPart = parts[parts.length - 1].split('?')[0];
-
-  // Check if the last part matches a known static file extension
-  if (!staticFileExtensions.includes(path.extname(lastPart))) {
-    console.log(`Client requested path: ${lastPart}`);
-  }
-  next();
-});
 
 // Serve the main HTML file
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-
-// Serve the main HTML file
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 function formatAndPrint(header, data) {
   console.log(header);
   console.log(data);
@@ -132,3 +107,4 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   startTime = new Date();
 });
+
