@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 // List of known static file extensions to exclude
 const staticFileExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.ico'];
-
+const excludedPaths = ['/save_ip'];
 // Log and extract the last part of the path, excluding known static files
 app.use((req, res, next) => {
   const requestedPath = req.url;
