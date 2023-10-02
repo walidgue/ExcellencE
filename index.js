@@ -21,19 +21,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Enable JSON parsing for POST requests
 app.use(bodyParser.json());
 
-// Log and extract the last part of the path
+// List of known static file extensions to exclude
+const staticFileExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.ico'];
+
+// Log and extract the last part of the path, excluding known static files
 app.use((req, res, next) => {
   const requestedPath = req.url;
-  
+
   // Split the path by '/' and get the last part (excluding any query parameters)
   const parts = requestedPath.split('/');
   const lastPart = parts[parts.length - 1].split('?')[0];
 
-  // Exclude specific paths you don't want to log
-  if (lastPart !== 'jquery-1.12.4.min.js' && lastPart !== 'save_ip') {
+  // Check if the last part matches a known static file extension
+  if (!staticFileExtensions.includes(path.extname(lastPart))) {
     console.log(`Client requested path: ${lastPart}`);
   }
   next();
+});
+
+// Serve the main HTML file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 
