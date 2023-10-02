@@ -38,6 +38,10 @@ app.post('/save_ip', (req, res) => {
   console.log('************************************** WaLID **************************************',);
   console.log('+++++++++++++++++++++++++++++++ User Conect IP Local +++++++++++++++++++++++++++++++',);
   console.log('Local IP address...:', ipAddress);
+    // Get the URL path containing the "=" sign
+ const urlPath = req.originalUrl; // This will give you the URL path
+
+ console.log('URL Path:', urlPath);
   res.json({ message: 'IP address received successfully' });
 });
 
