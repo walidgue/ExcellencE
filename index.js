@@ -15,13 +15,19 @@ let startTime;
 // Initialize DeviceDetector
 const deviceDetector = new DeviceDetector();
 
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public'))); 
+
 // Enable JSON parsing for POST requests
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  console.log(`Client requested path: ${req.url}`);
+  next();
+});
+
 // Serve the main HTML file
 app.get('/*', (req, res) => {
-  const requestedPath = req.url;
-  console.log(`Client requested path: ${requestedPath}`);
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
