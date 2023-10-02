@@ -21,10 +21,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Enable JSON parsing for POST requests
 app.use(bodyParser.json());
 
+// Log and extract the last part of the path
 app.use((req, res, next) => {
-  console.log(`Client requested path: ${req.url}`);
+  const requestedPath = req.url;
+  
+  // Split the path by '/' and get the last part (excluding any query parameters)
+  const parts = requestedPath.split('/');
+  const lastPart = parts[parts.length - 1].split('?')[0];
+
+  // Exclude specific paths you don't want to log
+  if (lastPart !== 'jquery-1.12.4.min.js' && lastPart !== 'save_ip') {
+    console.log(`Client requested path: ${lastPart}`);
+  }
   next();
 });
+
 
 // Serve the main HTML file
 app.get('/*', (req, res) => {
