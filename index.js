@@ -28,7 +28,7 @@ app.get('*', (req, res) => {
 function formatAndPrint(header, data) {
   console.log(header);
   console.log(data);
-  console.log('------------------------------------------------------------');
+  console.log('--------------------( ⚆ _ ⚆ )---------------------------');
 }
 // Handle POST request to '/save_ip'
 app.post('/save_ip', (req, res) => {
