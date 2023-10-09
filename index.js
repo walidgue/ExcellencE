@@ -66,24 +66,30 @@ io.on('connection', (socket) => {
     let organization = 'Not Available';
 
     const fields = 'connection';
+try {
+  const ipWhoisResponse = await axios.get(`http://ipwho.is/${externalIP}?output=json&fields=${fields}`);
 
-    try {
-      const ipWhoisResponse = await axios.get(`http://ipwho.is/${externalIP}?output=json&fields=${fields}`);
+  if (ipWhoisResponse.status === 200) {
+    const responseData = ipWhoisResponse.data;
+    serviceProvider = responseData.connection.isp;
+    organization = responseData.connection.org;
 
-      if (ipWhoisResponse.status === 200) {
-        const responseData = ipWhoisResponse.data;
-        serviceProvider = responseData.connection.isp;
-        organization = responseData.connection.org;
-        const currentTime = responseData.timezone.current_time;
-
-        console.log(`IP Service Provider: ${serviceProvider}`);
-        console.log(`Organization: ${organization}`);
-      } else {
-        console.error('Error fetching IP service provider: Unexpected status code', ipWhoisResponse.status);
-      }
-    } catch (error) {
-      console.error('Error fetching IP service provider:', error.message);
+    // Check if responseData.timezone exists before accessing its properties
+    if (responseData.timezone) {
+      const currentTime = responseData.timezone.current_time;
+      console.log(`Current Time: ${currentTime}`);
+    } else {
+      console.log('Current Time: N/A');
     }
+
+    console.log(`IP Service Provider: ${serviceProvider}`);
+    console.log(`Organization: ${organization}`);
+  } else {
+    console.error('Error fetching IP service provider: Unexpected status code', ipWhoisResponse.status);
+  }
+} catch (error) {
+  console.error('Error fetching IP service provider:', error.message);
+}
 
     console.log(`IP Service Provider.: ${serviceProvider}`);
     console.log(`Organization........: ${organization}`);
