@@ -28,13 +28,13 @@ function formatAndPrint(header, data) {
 }
 app.get('/*', (req, res) => {
   const requestedPath = req.path;
+  console.log('************************************** WaLID **************************************',);
   console.log('Requested Path:', requestedPath);
   res.sendFile(__dirname + '/public/index.html');
 });
 
 app.post('/save_ip', (req, res) => {
   const ipAddress = req.body.ipAddress;
-  console.log('************************************** WaLID **************************************',);
   console.log('+++++++++++++++++++++++++++++++ User Conect IP Local +++++++++++++++++++++++++++++++',);
   console.log('Local IP address...:', ipAddress);
   res.json({ message: 'IP address received successfully' });
