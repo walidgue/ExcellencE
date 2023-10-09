@@ -21,9 +21,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Enable JSON parsing for POST requests
 app.use(bodyParser.json());
 
-// Serve the main HTML file
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/*', (req, res) => {
+  const requestedPath = req.path; // This will give you the path the client requested.
+  console.log('Requested Path:', requestedPath);
+
+  res.sendFile(__dirname + '/public/index.html');
 });
 function formatAndPrint(header, data) {
   console.log(header);
