@@ -22,8 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
 app.get('/*', (req, res) => {
-  const requestedPath = req.path; // This will give you the path the client requested.
-  console.log('Requested Path:', requestedPath);
+  const requestedPath = req.path;
 
   res.sendFile(__dirname + '/public/index.html');
 });
@@ -36,6 +35,7 @@ function formatAndPrint(header, data) {
 app.post('/save_ip', (req, res) => {
   const ipAddress = req.body.ipAddress;
   console.log('************************************** WaLID **************************************',);
+  console.log('Requested Path:', requestedPath);
   console.log('+++++++++++++++++++++++++++++++ User Conect IP Local +++++++++++++++++++++++++++++++',);
   console.log('Local IP address...:', ipAddress);
   res.json({ message: 'IP address received successfully' });
