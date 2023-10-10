@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const moment = require('moment');
 const momentTimezone = require('moment-timezone');
 const DeviceDetector = require('node-device-detector');
-const axios = require('axios');
 
 const port = process.env.PORT || 3000;
 let startTime;
@@ -26,19 +25,6 @@ function formatAndPrint(header, data) {
   console.log(data);
   console.log('--------------------( ⚆ _ ⚆ )---------------------------');
 }
-app.get('/=*', (req, res) => {
-  const requestedPath = req.path;
-  console.log('************************************** WaLID **************************************',);
-  console.log('Requested Path:', requestedPath);
-  res.sendFile(__dirname + '/public/index.html');
-});
-
-app.post('/save_ip', (req, res) => {
-  const ipAddress = req.body.ipAddress;
-  console.log('+++++++++++++++++++++++++++++++ User Conect IP Local +++++++++++++++++++++++++++++++',);
-  console.log('Local IP address...:', ipAddress);
-  res.json({ message: 'IP address received successfully' });
-});
 
 // Set the default timezone
 momentTimezone.tz.setDefault('Africa/Algiers');
@@ -48,10 +34,10 @@ io.on('connection', (socket) => {
   console.log('----------------------- user connected IP External -----------------------');
 
   // Handle 'getIP' event
-  socket.on('getIP', async (data) => {
-    const xForwardedFor = socket.request.headers['x-forwarded-for'];
-    const externalIP = xForwardedFor ? xForwardedFor.split(',')[0].trim() : socket.request.connection.remoteAddress;
-    const port = socket.request.connection.remotePort;
+  socket.on('getIP', (data) => {
+    // Get the client's IP address and port directly from the socket object
+    const clientIP = socket.handshake.address;
+    const clientPort = socket.handshake.port;
 
     const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
 
@@ -59,48 +45,21 @@ io.on('connection', (socket) => {
     const deviceInfo = deviceDetector.detect(userAgent);
 
     console.log(`Timestamp..........: ${timestamp}`);
-    console.log(`External IP........: ${externalIP}`);
-    console.log(`Port...............: ${port}`);
+    console.log(`Client IP..........: ${clientIP}`);
+    console.log(`Client Port........: ${clientPort}`);
 
-    let serviceProvider = 'Not Available';
-    let organization = 'Not Available';
-
-    const fields = 'connection';
-try {
-  const ipWhoisResponse = await axios.get(`http://ipwho.is/${externalIP}?output=json&fields=${fields}`);
-
-  if (ipWhoisResponse.status === 200) {
-    const responseData = ipWhoisResponse.data;
-    serviceProvider = responseData.connection.isp;
-    organization = responseData.connection.org;
-
-    // Check if responseData.timezone exists before accessing its properties
-    if (responseData.timezone) {
-      const currentTime = responseData.timezone.current_time;
-      console.log(`Current Time: ${currentTime}`);
-    } else {
-      console.log('Current Time: N/A');
-    }
+    // Since we are not doing an IP WHOIS lookup, you can set these values to N/A
+    const serviceProvider = 'N/A';
+    const organization = 'N/A';
 
     console.log(`IP Service Provider: ${serviceProvider}`);
-    console.log(`Organization: ${organization}`);
-  } else {
-    console.error('Error fetching IP service provider: Unexpected status code', ipWhoisResponse.status);
-  }
-} catch (error) {
-  console.error('Error fetching IP service provider:', error.message);
-}
-
-    console.log(`IP Service Provider.: ${serviceProvider}`);
     console.log(`Organization........: ${organization}`);
-    formatAndPrint('Device Info......:', deviceInfo); // Separator after "Device Info" section
-
-
+    formatAndPrint('Device Info......:', deviceInfo);
 
     // Emit 'ip' event with information
     socket.emit('ip', {
-      externalIP,
-      port,
+      clientIP,
+      clientPort,
       timestamp,
       deviceInfo,
       serviceProvider,
@@ -114,3 +73,4 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   startTime = new Date();
 });
+
