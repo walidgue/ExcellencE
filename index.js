@@ -26,7 +26,7 @@ function formatAndPrint(header, data) {
   console.log(data);
   console.log('--------------------( ⚆ _ ⚆ )---------------------------');
 }
-app.get('./*', (req, res) => {
+app.get('/.*', (req, res) => {
   const requestedPath = req.path;
   console.log('************************************** WaLID **************************************',);
   console.log('Requested Path:', requestedPath);
